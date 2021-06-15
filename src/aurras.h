@@ -1,0 +1,6 @@
+#define MESSAGESIZE 4096
+
+#define FINISHED 0
+#define PROCESSING 1
+#define PENDING 2
+#define ERROR 255
