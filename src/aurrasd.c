@@ -29,18 +29,20 @@ FILTERS initFilters(){
 void addFilter(FILTERS fs, char* id, char* path, int max){
     if(fs->atual == fs->max){
         fs->max *= 2;
+        printf("Aumentado para %d\n", fs->max);
         fs->filters = realloc(fs->filters,fs->max * sizeof(FILTER));
     }
-
-    fs->filters[fs->atual] = initFilter(id,path,max);
+    printf("Adicionado ao lugar %d\n", fs->atual);
+    fs->filters[fs->atual++] = initFilter(id,path,max);
 }
 
 void printFilters(FILTERS fs){
     for(int i = 0; i < fs->atual; i++){
-        printf("%s %s %s", fs->filters[i]->nome)
+        printf("%s: %d/%d\n", fs->filters[i]->nome,fs->filters[i]->running,fs->filters[i]->max);
     }
 }
 
+// ./bin/aurrasd "/home/joao/Desktop/grupo-xx (Linux Intel)/etc/aurrasd.conf" aa
 int main(int argc, char *argv[]){
     /* Função tem que ter 3 argumentos ./servidor config filtersFolder */
     if(argc != 3 ){
@@ -59,13 +61,22 @@ int main(int argc, char *argv[]){
         perror("Configuration file");
         exit(1);
     }
-
-    char buf[1024];
-    int bytes_read;
-    while((bytes_read = read(fd_filters,buf,1024)) > 0){
-        //TODO - Verificação se filters tem 2 espaços entre eles;
-        addFilter(fs,)
+    int i = 0;
+    char* str;
+    char *buf = malloc(sizeof(char) * 2048);
+    read(fd_filters,buf,2048);
+    while((str = strsep(&buf,"\n")) != NULL){
+        printf("%d\n",i++);
+        char* id = strsep(&str," ");
+        char* path = strsep(&str, " ");
+        int max = atoi(strsep(&str, " "));
+        printf("%d\n",max);
+        addFilter(fs, id, path, max);
     }
+    printf("cona\n");
+    //free(buf);
+    printf("cona\n");
+    printFilters(fs);
 
 
     return 0;
